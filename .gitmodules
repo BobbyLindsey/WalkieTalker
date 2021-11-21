@@ -1,0 +1,3 @@
+[submodule "talkiepi"]
+	path = talkiepi
+	url = https://github.com/BobbyLindsey/talkiepi.git
