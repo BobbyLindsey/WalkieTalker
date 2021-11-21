@@ -1,10 +1,10 @@
 
 # Update and Upgrade
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 # Install Git
-sudo apt install git
+sudo apt install -y git
 
 # Enable SPI in Raspi-Config
 
@@ -15,11 +15,11 @@ cd seeed-voicecard
 sudo ./install.sh 2mic
 
 # Install TalkiePi Pre-Reqs
-sudo apt install libopenal-dev libopus-dev golang
+sudo apt install -y libopenal-dev libopus-dev golang
 
 # Setup Golang
-mkdir -p ~/go/src
-mkdir -p ~/go/bin
+mkdir -p $HOME/go/src
+mkdir -p $HOME/go/bin
 echo "export GOPATH=$HOME/go" > ~/.profile
 echo "export GOBIN=$HOME/go/bin" > ~/.profile
 echo "export PATH=$PATH:$GOPATH/bin" > ~/.profile
