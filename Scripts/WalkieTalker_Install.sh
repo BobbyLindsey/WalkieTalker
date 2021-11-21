@@ -18,22 +18,22 @@ sudo ./install.sh 2mic
 sudo apt install -y libopenal-dev libopus-dev golang
 
 # Setup Golang
-mkdir -p $HOME/go/src
-mkdir -p $HOME/go/bin
-echo "export GOPATH=$HOME/go" > ~/.profile
-echo "export GOBIN=$HOME/go/bin" > ~/.profile
-echo "export PATH=$PATH:$GOPATH/bin" > ~/.profile
-source ~/.profile
+mkdir -p ${HOME}/go/src
+mkdir -p ${HOME}/go/bin
+GOPATH=${HOME}/go > /etc/profile
+GOBIN=${HOME}/go/bin > /etc/profile
+PATH=${PATH}:${GOPATH}/bin > /etc/profile
 
 # Install TalkiePi
-cd $GOPATH/src
+cd ${GOPATH}/src
 go get periph.io/x/periph
 go get github.com/dchote/gopus
 go get github.com/BobbyLindsey/talkiepi
-go build -o $GOPATH/bin/talkiepi $GOPATH/src/github.com/BobbyLindsey/talkiepi/main.go
+go build -o ${GOPATH}/bin/talkiepi ${GOPATH}/src/github.com/BobbyLindsey/talkiepi/cmd/talkiepi/main.go
 
 # Setup Service
 sudo cp /home/pi/go/src/github.com/BobbyLindsey/talkiepi/conf/systemd/mumble.service /etc/systemd/system/mumble.service
 sudo systemctl enable mumble.service
 sudo systemctl daemon-reload
 sudo systemctl restart mumble.service
+
