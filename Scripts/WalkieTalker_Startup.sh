@@ -11,16 +11,17 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ]; then
         #Reboot
         reboot
     fi
-
+    
     # Rename the Pi using the last 6 digits of the WiFi MAC Address
     hostname WalkieTalker-$MAC_SUFFIX
     raspi-config nonint do_hostname WalkieTalker-$MAC_SUFFIX
 
     # Update the memory split, just in case
     raspi-config nonint do_memory_split 16
-
-    # Restart with the new hostname
-    reboot
+    
+    # Get the latest version of the script and then reboot
+    cd /home/pi/WalkieTalkier
+    git pull --ff --autostash --recurse-submodules=yes; reboot
 fi
 
 #If FileSystem Overlay Disabled
