@@ -16,10 +16,9 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ]; then
     hostname WalkieTalker-$MAC_SUFFIX
     raspi-config nonint do_hostname WalkieTalker-$MAC_SUFFIX
 
-    
     # Update the memory split, just in case
     raspi-config nonint do_memory_split 16
-    
+
     # Restart with the new hostname
     reboot
 fi
@@ -30,7 +29,7 @@ if [ ! -f /boot/initrd.img-* ]; then
     systemctl stop zerotier-one
     rm -f /var/lib/zerotier-one/identity.public
     rm -f /var/lib/zerotier-one/identity.secret
-    
+
     # Enable FileSystem Overlay
     raspi-config nonint enable_overlayfs
 
@@ -42,22 +41,23 @@ TALKIE_PI_CMD="/home/pi/go/bin/talkiepi"
 
 if [ -f /boot/mumble_server.txt ]; then
     MUMBLE_SERVER=`cat /boot/mumble_server.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -server $MUMBLE_SERVER"
+    TALKIE_PI_CMD="$TALKIE_PI_CMD -server '$MUMBLE_SERVER'"
 fi
 
 if [ -f /boot/mumble_username.txt ]; then
     MUMBLE_USERNAME=`cat /boot/mumble_username.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -username $MUMBLE_USERNAME"
+    TALKIE_PI_CMD="$TALKIE_PI_CMD -username '$MUMBLE_USERNAME'"
 fi
 
 if [ -f /boot/mumble_password.txt ]; then
     MUMBLE_PASSWORD=`cat /boot/mumble_password.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -password $MUMBLE_PASSWORD"
+    TALKIE_PI_CMD="$TALKIE_PI_CMD -password '$MUMBLE_PASSWORD'"
 fi
 
 if [ -f /boot/mumble_channel.txt ]; then
     MUMBLE_CHANNEL=`cat /boot/mumble_channel.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -channel $MUMBLE_CHANNEL"
+    TALKIE_PI_CMD="$TALKIE_PI_CMD -channel '$MUMBLE_CHANNEL'"
 fi
 
-/bin/bash -c "$TALKIE_PI_CMD"
+echo Executing: $TALKIE_PI_CMD | tee /home/pi/WalkieTalker.log
+/bin/bash -c "$TALKIE_PI_CMD" | tee /home/pi/WalkieTalker.log
