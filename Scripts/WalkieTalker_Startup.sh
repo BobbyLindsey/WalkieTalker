@@ -1,8 +1,10 @@
 #Get the last 6 digits of the WiFi MAC Address
 MAC_SUFFIX=`ifconfig wlan0 | sed -n "/ether/p;" | sed "s/^.*ether b8:27:eb:\(..\):\(..\):\(..\).*/\1\2\3/" | tr '[:lower:]' '[:upper:]'`
 
+UP_TO_DATE=$(git status -uno | grep "up to date" | wc -l)
+
 # If hostname does not match expected value
-if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ]; then
+if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
     # If FileSystemOverlay enabled
     if [ -f /boot/initrd.img-* ]; then
         # Disable FileSystem Overlay
