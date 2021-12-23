@@ -20,9 +20,10 @@ sudo apt install -y libopenal-dev libopus-dev golang
 # Setup Golang
 mkdir -p ${HOME}/go/src
 mkdir -p ${HOME}/go/bin
-GOPATH=${HOME}/go > /etc/profile
-GOBIN=${HOME}/go/bin > /etc/profile
-PATH=${PATH}:${GOPATH}/bin > /etc/profile
+GOPATH=${HOME}/go >> /etc/profile
+GOBIN=${HOME}/go/bin >> /etc/profile
+PATH=${PATH}:${GOPATH}/bin >> /etc/profile
+source /etc/profile
 
 # Install TalkiePi
 cd ${GOPATH}/src
@@ -37,3 +38,5 @@ sudo systemctl enable mumble.service
 sudo systemctl daemon-reload
 sudo systemctl restart mumble.service
 
+## ToDo:
+# Install ZeroTeir

@@ -15,6 +15,7 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ]; then
     # Rename the Pi using the last 6 digits of the WiFi MAC Address
     hostname WalkieTalker-$MAC_SUFFIX
     raspi-config nonint do_hostname WalkieTalker-$MAC_SUFFIX
+
     
     # Update the memory split, just in case
     raspi-config nonint do_memory_split 16
@@ -25,6 +26,11 @@ fi
 
 #If FileSystem Overlay Disabled
 if [ ! -f /boot/initrd.img-* ]; then
+    # Reset the ZeroTeir Configuration
+    systemctl stop zerotier-one
+    rm -f /var/lib/zerotier-one/identity.public
+    rm -f /var/lib/zerotier-one/identity.secret
+    
     # Enable FileSystem Overlay
     raspi-config nonint enable_overlayfs
 
@@ -55,5 +61,3 @@ if [ -f /boot/mumble_channel.txt ]; then
 fi
 
 /bin/bash -c "$TALKIE_PI_CMD"
-
-#TalkiePi-514f1e
