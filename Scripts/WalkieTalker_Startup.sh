@@ -1,6 +1,6 @@
 #Get the last 6 digits of the WiFi MAC Address
 MAC_SUFFIX=`ifconfig wlan0 | sed -n "/ether/p;" | sed "s/^.*ether b8:27:eb:\(..\):\(..\):\(..\).*/\1\2\3/" | tr '[:lower:]' '[:upper:]'`
-UP_TO_DATE=$(git fetch | git status | grep "up to date" | wc -l | sed -e 's/^[[:space:]]*//')
+UP_TO_DATE=$(git fetch; git status | grep "up to date" | wc -l | sed -e 's/^[[:space:]]*//')
 LOG_FILE="/home/pi/WalkieTalker.log"
 TALKIE_PI_CMD="/home/pi/go/bin/talkiepi"
 
@@ -24,7 +24,7 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
     
     # Get the latest version of the script and then reboot
     cd /home/pi/WalkieTalkier
-    git pull --ff --autostash --recurse-submodules=yes; reboot
+    git pull --ff --autostash --recurse-submodules=yes; sync; reboot
 fi
 
 #If FileSystem Overlay Disabled
