@@ -1,4 +1,5 @@
 #Get the last 6 digits of the WiFi MAC Address
+cd /home/pi/WalkieTalker
 MAC_SUFFIX=`ifconfig wlan0 | sed -n "/ether/p;" | sed "s/^.*ether b8:27:eb:\(..\):\(..\):\(..\).*/\1\2\3/" | tr '[:lower:]' '[:upper:]'`
 UP_TO_DATE=$(git fetch; git status | grep "up to date" | wc -l | sed -e 's/^[[:space:]]*//')
 LOG_FILE="/home/pi/WalkieTalker.log"
@@ -23,7 +24,6 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
     raspi-config nonint do_memory_split 16
     
     # Get the latest version of the script and then reboot
-    cd ..
     git clean -d -f
     git pull --autostash --recurse-submodules=yes; sync; reboot
 fi
