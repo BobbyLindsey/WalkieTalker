@@ -25,7 +25,10 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
     
     # Get the latest version of the script and then reboot
     git clean -d -f
-    git pull --autostash --recurse-submodules=yes; sync; reboot
+    git pull --autostash --recurse-submodules=yes
+    sync
+    sleep 15
+    reboot
 fi
 
 #If FileSystem Overlay Disabled
