@@ -1,7 +1,8 @@
 #Get the last 6 digits of the WiFi MAC Address
 MAC_SUFFIX=`ifconfig wlan0 | sed -n "/ether/p;" | sed "s/^.*ether b8:27:eb:\(..\):\(..\):\(..\).*/\1\2\3/" | tr '[:lower:]' '[:upper:]'`
-
 UP_TO_DATE=$(git status -uno | grep "up to date" | wc -l)
+LOG_FILE="/home/pi/WalkieTalker.log"
+TALKIE_PI_CMD="/home/pi/go/bin/talkiepi"
 
 # If hostname does not match expected value
 if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
@@ -40,27 +41,40 @@ if [ ! -f /boot/initrd.img-* ]; then
     reboot
 fi
 
-TALKIE_PI_CMD="/home/pi/go/bin/talkiepi"
+# Defaults
+MUMBLE_USERNAME=$(hostname)
+MUMBLE_CHANNEL="Root"
+
+if [ -f /boot/zerotier_network.txt ]; then
+    ZEROTIER_NETWORK=`cat /boot/zerotier_network.txt`
+    echo "Joining ZeroTier Network: $ZEROTIER_NETWORK" > $LOG_FILE
+    zerotier-cli join $ZEROTIER_NETWORK >> $LOG_FILE
+fi
 
 if [ -f /boot/mumble_server.txt ]; then
     MUMBLE_SERVER=`cat /boot/mumble_server.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -server '$MUMBLE_SERVER'"
-fi
-
-if [ -f /boot/mumble_username.txt ]; then
-    MUMBLE_USERNAME=`cat /boot/mumble_username.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -username '$MUMBLE_USERNAME'"
-fi
-
-if [ -f /boot/mumble_password.txt ]; then
-    MUMBLE_PASSWORD=`cat /boot/mumble_password.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -password '$MUMBLE_PASSWORD'"
+else
+    echo "Missing /boot/mumble_server.txt" >> $LOG_FILE
+    echo "WalkieTalker cannot start without a server specified. Exiting..."
+    exit
 fi
 
 if [ -f /boot/mumble_channel.txt ]; then
     MUMBLE_CHANNEL=`cat /boot/mumble_channel.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -channel '$MUMBLE_CHANNEL'"
 fi
 
-echo Executing: $TALKIE_PI_CMD | tee /home/pi/WalkieTalker.log
-/bin/bash -c "$TALKIE_PI_CMD" | tee /home/pi/WalkieTalker.log
+if [ -f /boot/mumble_username.txt ]; then
+    MUMBLE_USERNAME=`cat /boot/mumble_username.txt`
+fi
+
+TALKIE_PI_CMD="$TALKIE_PI_CMD -server '$MUMBLE_SERVER'"
+TALKIE_PI_CMD="$TALKIE_PI_CMD -channel $MUMBLE_CHANNEL"
+TALKIE_PI_CMD="$TALKIE_PI_CMD -username $MUMBLE_USERNAME"
+
+if [ -f /boot/mumble_password.txt ]; then
+    MUMBLE_PASSWORD=`cat /boot/mumble_password.txt`
+    TALKIE_PI_CMD="$TALKIE_PI_CMD -password $MUMBLE_PASSWORD"
+fi
+
+echo "Executing: $TALKIE_PI_CMD" >> $LOG_FILE
+/bin/bash -c "$TALKIE_PI_CMD" >> $LOG_FILE
