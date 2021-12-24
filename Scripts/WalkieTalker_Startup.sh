@@ -24,7 +24,7 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
     
     # Get the latest version of the script and then reboot
     cd /home/pi/WalkieTalkier
-    git pull --ff --autostash --recurse-submodules=yes; sync; reboot
+    git pull --autostash --recurse-submodules=yes; sync; reboot
 fi
 
 #If FileSystem Overlay Disabled
