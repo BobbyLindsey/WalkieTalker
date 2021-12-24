@@ -1,6 +1,6 @@
 #Get the last 6 digits of the WiFi MAC Address
 MAC_SUFFIX=`ifconfig wlan0 | sed -n "/ether/p;" | sed "s/^.*ether b8:27:eb:\(..\):\(..\):\(..\).*/\1\2\3/" | tr '[:lower:]' '[:upper:]'`
-UP_TO_DATE=$(git fetch | git status | grep "up to date" | wc -l)
+UP_TO_DATE=$(git fetch | git status | grep "up to date" | wc -l | sed -e 's/^[[:space:]]*//')
 LOG_FILE="/home/pi/WalkieTalker.log"
 TALKIE_PI_CMD="/home/pi/go/bin/talkiepi"
 
