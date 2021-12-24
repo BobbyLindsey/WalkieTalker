@@ -23,7 +23,7 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
     raspi-config nonint do_memory_split 16
     
     # Get the latest version of the script and then reboot
-    cd /home/pi/WalkieTalker
+    cd ..
     git clean -d -f
     git pull --autostash --recurse-submodules=yes; sync; reboot
 fi
