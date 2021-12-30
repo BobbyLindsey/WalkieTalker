@@ -15,16 +15,24 @@ if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ] || [ $UP_TO_DATE != "1" ]; then
         #Reboot
         reboot
     fi
-    
-    # Rename the Pi using the last 6 digits of the WiFi MAC Address
-    hostname WalkieTalker-$MAC_SUFFIX
-    raspi-config nonint do_hostname WalkieTalker-$MAC_SUFFIX
 
-    # Update the memory split, just in case
-    raspi-config nonint do_memory_split 16
+    if [ $(hostname) != "WalkieTalker-$MAC_SUFFIX" ]; then
+        # Reset the ZeroTeir Configuration
+        systemctl stop zerotier-one
+        rm -f /var/lib/zerotier-one/identity.public
+        rm -f /var/lib/zerotier-one/identity.secret
+
+        # Rename the Pi using the last 6 digits of the WiFi MAC Address
+        hostname WalkieTalker-$MAC_SUFFIX
+        raspi-config nonint do_hostname WalkieTalker-$MAC_SUFFIX
+
+        # Update the memory split, just in case
+        raspi-config nonint do_memory_split 16
+    fi
     
     # Get the latest version of the script and then reboot
     git clean -d -f
+    git fetch
     git pull --autostash --recurse-submodules=yes
     sync
     sleep 15
@@ -33,11 +41,6 @@ fi
 
 #If FileSystem Overlay Disabled
 if [ ! -f /boot/initrd.img-* ]; then
-    # Reset the ZeroTeir Configuration
-    systemctl stop zerotier-one
-    rm -f /var/lib/zerotier-one/identity.public
-    rm -f /var/lib/zerotier-one/identity.secret
-
     # Enable FileSystem Overlay
     raspi-config nonint enable_overlayfs
 
@@ -72,12 +75,12 @@ if [ -f /boot/mumble_username.txt ]; then
 fi
 
 TALKIE_PI_CMD="$TALKIE_PI_CMD -server '$MUMBLE_SERVER'"
-TALKIE_PI_CMD="$TALKIE_PI_CMD -channel $MUMBLE_CHANNEL"
-TALKIE_PI_CMD="$TALKIE_PI_CMD -username $MUMBLE_USERNAME"
+TALKIE_PI_CMD="$TALKIE_PI_CMD -channel '$MUMBLE_CHANNEL'"
+TALKIE_PI_CMD="$TALKIE_PI_CMD -username '$MUMBLE_USERNAME'"
 
 if [ -f /boot/mumble_password.txt ]; then
     MUMBLE_PASSWORD=`cat /boot/mumble_password.txt`
-    TALKIE_PI_CMD="$TALKIE_PI_CMD -password $MUMBLE_PASSWORD"
+    TALKIE_PI_CMD="$TALKIE_PI_CMD -password '$MUMBLE_PASSWORD'"
 fi
 
 echo "Executing: $TALKIE_PI_CMD" >> $LOG_FILE
