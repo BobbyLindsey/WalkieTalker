@@ -76,7 +76,7 @@ fi
 
 TALKIE_PI_CMD="$TALKIE_PI_CMD -server '$MUMBLE_SERVER'"
 TALKIE_PI_CMD="$TALKIE_PI_CMD -channel '$MUMBLE_CHANNEL'"
-TALKIE_PI_CMD="$TALKIE_PI_CMD -username '$MUMBLE_USERNAME'"
+TALKIE_PI_CMD="$TALKIE_PI_CMD -username $MUMBLE_USERNAME"
 
 if [ -f /boot/mumble_password.txt ]; then
     MUMBLE_PASSWORD=`cat /boot/mumble_password.txt`
